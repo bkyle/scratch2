@@ -17,10 +17,12 @@ class NewScratchDocumentCommand(sublime_plugin.WindowCommand):
     """Reads the plugin settings and ensures that the class instance is configured
     correctly."""
 
-    settings = sublime.load_settings("Scratch.sublime-settings")
+    settings = sublime.load_settings("Scratch2.sublime-settings")
 
     # Setup the scratch directory
     path = settings.get("save_path")
+    if not path:
+      path = "~/scratch"
     path = os.path.expanduser(path)
     if not os.path.exists(path):
       os.mkdir(path)
@@ -28,6 +30,8 @@ class NewScratchDocumentCommand(sublime_plugin.WindowCommand):
 
     # Setup the default extension
     ext = settings.get("extension")
+    if not ext:
+      ext = ".md"
     ext = re.sub(r"^\.+", "", ext)
     self.ext = ext
 
