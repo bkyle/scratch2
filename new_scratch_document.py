@@ -54,7 +54,7 @@ class NewScratchDocumentCommand(sublime_plugin.WindowCommand):
     files = [_safe_int(value) for value in files]
 
     # Remove the non-integer values.
-    files = [v for v in files if v]
+    files = [v for v in files if v is not None]
 
     if len(files) > 0:
       filename = "%d.%s" % (sorted(files, reverse=True)[0] + 1, ext)
