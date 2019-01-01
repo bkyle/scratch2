@@ -1,0 +1,9 @@
+[
+	{
+		"id": "file",
+		"children": [
+			{ "id": "new scratch" },
+			{ "command": "new_scratch_document" }
+		]
+	}
+]

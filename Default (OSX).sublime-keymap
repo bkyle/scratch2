@@ -1,0 +1,5 @@
+[
+    { 
+        "keys": ["command+shift+n"], "command": "new_scratch_document"
+    }
+]
