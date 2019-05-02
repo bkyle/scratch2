@@ -5,6 +5,43 @@ import re
 import sublime
 import sublime_plugin
 
+_settings_file_name = "Scratch2.sublime-settings"
+
+def get_save_path(settings, create=False):
+  """Returns the absolute path that scratch files should be saved in as configured in the
+  passed settings.  The directory to store scratch files can optionally be created.
+
+  Args:
+    settings: Sublime settings to read the save path from.
+    create: bool indicating whether the save path should be created if it doesn't exist.
+
+  Returns:
+    The absolute path that scratch files should be saved in.
+  """
+  path = settings.get("save_path")
+  if not path:
+    path = "~/scratch"
+  path = os.path.expanduser(path)
+
+  if create and not os.path.exists(path):
+    os.mkdir(path)
+  return path
+
+def get_extension(settings):
+  """Returns the extension that should be used for scratch files by default.
+
+  Args:
+    settings: Sublime settings to read the extension from.
+
+  Returns:
+    The file extension without the leading period to be used for scratch files.
+  """
+  ext = settings.get("extension")
+  if not ext:
+    ext = ".md"
+  ext = re.sub(r"^\.+", "", ext)
+  return ext
+
 def _safe_int(value):
   try:
     return int(value)
@@ -16,24 +53,9 @@ class NewScratchDocumentCommand(sublime_plugin.WindowCommand):
   def setup(self):
     """Reads the plugin settings and ensures that the class instance is configured
     correctly."""
-
-    settings = sublime.load_settings("Scratch2.sublime-settings")
-
-    # Setup the scratch directory
-    path = settings.get("save_path")
-    if not path:
-      path = "~/scratch"
-    path = os.path.expanduser(path)
-    if not os.path.exists(path):
-      os.mkdir(path)
-    self.path = path
-
-    # Setup the default extension
-    ext = settings.get("extension")
-    if not ext:
-      ext = ".md"
-    ext = re.sub(r"^\.+", "", ext)
-    self.ext = ext
+    settings = sublime.load_settings(_settings_file_name)
+    self.path = get_save_path(settings, create=True)
+    self.ext = get_extension(settings)
 
   def _next_file_path(self, path=None, ext=None):
 
